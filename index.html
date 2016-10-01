@@ -49,21 +49,20 @@
 	<script>
 		window.onload = function(){
 			//planetarium = new VirtualSky({id:'starmapper',callback:{geo:geoIP}});
-				planetarium = $.virtualsky({
-					id:'starmapper',
-					// projection: 'mollweide',
-					fullscreen:true
-				});
-				planetarium.hide()
 			jQuery.ajax({
 				url: 'data/exos_radians.json',
 				complete: function(e) {
 					exos = $.parseJSON(e.responseText).exos;
 					exos_as_stars = exos.map(function(e) {
-						return [677, -1, e[2], e[3]]
+						return [e[0], -1, e[2], e[3]]
 					});
-					planetarium.stars = exos_as_stars;
-					planetarium.show();
+  				planetarium = $.virtualsky({
+  					id:'starmapper',
+						atmosphere: false,
+  					projection: "mollweide",
+            exos: exos_as_stars,
+  					fullscreen:true
+  				});
 					planetarium.draw();
 				}
 			})
