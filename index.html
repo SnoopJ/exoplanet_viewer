@@ -56,7 +56,7 @@
 				});
 				planetarium.hide()
 			jQuery.ajax({
-				url: '/data/exos_radians.json',
+				url: 'data/exos_radians.json',
 				complete: function(e) {
 					exos = $.parseJSON(e.responseText).exos;
 					exos_as_stars = exos.map(function(e) {
