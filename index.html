@@ -127,7 +127,7 @@
                     ymin = Math.min(...y);
                     y = y.map(function(e) { return e-ymin });
                     ymax = Math.max(...y);
-                    y = y.map(function(e) { return -e*MAXANGLE/ymax });
+                    y = y.map(function(e) { return -(e-ymax/2)*MAXANGLE/ymax });
                     x.forEach(function(e,i,a) { planetarium.stars.push([677, -1, x[i], y[i]]); })
                     // planetarium.showstars = true;
                     planetarium.draw();
