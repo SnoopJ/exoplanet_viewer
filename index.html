@@ -118,6 +118,12 @@
                             planetarium.octostars.push([677, -1, x[i], y[i]]);
                         });
                     });
+                    delete planetarium.projections.equirectangular;
+                    delete planetarium.projections.fisheye;
+                    delete planetarium.projections.stereo;
+                    delete planetarium.projections.polar;
+                    delete planetarium.projections.lambert;
+                    delete planetarium.projections.ortho;
                 }
             })
         };
@@ -176,6 +182,7 @@
 
     <body>
         <h2><center>Colored points are exoplanets, mouse-over to view their name, click for detailed info</center></h2>
+        <center><b>Press 'h' to switch between different projections</b></center><BR/>
         <div id="controls">
             <center>
                 <!-- Draw stars: <input type="checkbox" id="showStars"/> -->
