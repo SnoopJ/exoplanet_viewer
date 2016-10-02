@@ -1262,9 +1262,10 @@ VirtualSky.prototype.createSky = function(){
 						$("#exoinfo").html(
 							"Name: " + exo[0] + "<BR/>" +
 							 (exo[4] != "null" ? "Mass (Jupiters): " + exo[4].toFixed(1) + "<BR/>" : "") +
-							 (exo[5] != "null" ? "Mass (Earths): " + exo[5].toFixed(1) + "<BR/>" : "")
+							 (exo[5] != "null" ? "Mass (Earths): " + exo[5].toFixed(1) + "<BR/>" : "") +
+							 "Discovery method: " + exo[7] + "<BR/>"
 						);
-						$("#exoinfo").css({ top: y + 75, left: x + 20 });
+						$("#exoinfo").css({ top: y + 75, left: x + 90 });
 						$("#exoinfo").show();
 					} else {
 						$("#exoinfo").hide();
