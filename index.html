@@ -66,10 +66,21 @@
                         showplanetlabels: false,
                         fullscreen:true
                     });
+                    $("#showStars").on('change', function(e) { planetarium.showstars = !planetarium.showstars; });
+                    $(".exofilter").on('change', function(e) { updateExos(); });
                     planetarium.draw();
                 }
             })
         };
+        function updateExos() {
+            planetarium.exos = exos.filter(function(e) {
+                return ($("#exo_timing").is(":checked") && e[7] == "timing") ||
+                ($("#exo_RV").is(":checked") && e[7] == "RV") ||
+                ($("#exo_transit").is(":checked") && e[7] == "transit") ||
+                ($("#exo_microlensing").is(":checked") && e[7] == "microlensing") ||
+                ($("#exo_imaging").is(":checked") && e[7] == "imaging");
+            });
+        }
         function toggleOctocat() {
             if($("#showOctocat").is(":checked")) {
                 planetarium.showstarsbackup = planetarium.showstars;
@@ -94,12 +105,11 @@
                     ymax = Math.max(...y);
                     y = y.map(function(e) { return -e*MAXANGLE/ymax });
                     x.forEach(function(e,i,a) { planetarium.stars.push([677, -1, x[i], y[i]]); })
-                    planetarium.showstars = true;
+                    // planetarium.showstars = true;
                     planetarium.draw();
                 });
             } else {
-                console.log("go back D:");
-                planetarium.showstars = planetarium.showstarsbackup;
+                // planetarium.showstars = planetarium.showstarsbackup;
                 planetarium.stars = planetarium.starsbackup;
                 planetarium.draw();
             }
@@ -118,8 +128,12 @@
     <body>
         <div id="controls">
             Draw a sweet Octocat: <input type="checkbox" id="showOctocat"/><BR/>
-            <!-- Draw stars: <input type="checkbox" id="showStars"/><BR/>
-            Draw exoplanets: <input type="checkbox" id="showExos"/><BR/> -->
+            Draw stars: <input type="checkbox" id="showStars"/><BR/>
+            Transit: <input type="checkbox" class="exofilter" id="exo_transit"/><BR/>
+            Timing: <input type="checkbox" class="exofilter" id="exo_timing"/><BR/>
+            Radial velocity: <input type="checkbox" class="exofilter" id="exo_RV"/><BR/>
+            Microlensing: <input type="checkbox" class="exofilter" id="exo_microlensing"/><BR/>
+            Imaging: <input type="checkbox" class="exofilter" id="exo_imaging"/><BR/>
         </div>
         <div id="starmapper"></div>
     </body>
