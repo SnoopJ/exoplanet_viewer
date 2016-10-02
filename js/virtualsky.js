@@ -1217,7 +1217,7 @@ VirtualSky.prototype.createSky = function(){
 				matched = e.data.sky.whichExo(x, y, e.data.sky);
 				if (matched !== false) {
 					var catprefix = "http://www.openexoplanetcatalogue.com/planet/";
-					window.open(catprefix + matched);
+					window.open(catprefix + e.data.sky.exos[matched][0]);
 				}
 			}
 		}).on('mousemove',{sky:this},function(e){
@@ -1258,7 +1258,12 @@ VirtualSky.prototype.createSky = function(){
 				if (matched === -1) {
 					matched = s.whichExo(x, y, s);
 					if (matched !== false) {
-						$("#exoinfo").text(matched);
+						exo = s.exos[matched];
+						$("#exoinfo").html(
+							"Name: " + exo[0] + "<BR/>" +
+							 (exo[4] != "null" ? "Mass (Jupiters): " + exo[4].toFixed(1) + "<BR/>" : "") +
+							 (exo[5] != "null" ? "Mass (Earths): " + exo[5].toFixed(1) + "<BR/>" : "")
+						);
 						$("#exoinfo").css({ top: y + 75, left: x + 20 });
 						$("#exoinfo").show();
 					} else {
@@ -1444,12 +1449,16 @@ VirtualSky.prototype.whichPointer = function(x,y){
 }
 VirtualSky.prototype.whichExo = function(x,y,sky){
 	var that = sky;
-	var filtered = that.exos.filter(function(e) {
+	var filtered = that.exos.map(function(e,i,a) {
 		var p = that.radec2xy(e[2], e[3]);
-		return Math.abs(x-p.x) < 5 && Math.abs(y-p.y) < 5;
-	});
+		if(Math.abs(x-p.x) < 5 && Math.abs(y-p.y) < 5) {
+			return i;
+		} else {
+			return false;
+		};
+	}).filter(function(e) {return e !== false});
 	if (filtered.length > 0) {
-		return filtered[0][0];
+		return filtered[0];
 	}
 
 	return false;
