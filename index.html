@@ -93,6 +93,30 @@
                         this.maxangle = Math.min(this.maxangle,Math.PI/2)
                         return this;
                     };
+                    jQuery.get('octo_path.svg', function(s) {
+                        octosvg = s.children[0];
+                        p = octosvg.getElementsByTagName("path")[0];
+                        L = p.getTotalLength();
+                        x=[]; y=[];
+                        for(var l=0; l<L; l += (10 + Math.random()*20)) {
+                            pt = p.getPointAtLength(l)
+                            x.push(pt['x']);
+                            y.push(pt['y']);
+                        }
+                        MAXANGLE = 1.0;
+                        xmin = Math.min(...x);
+                        x = x.map(function(e) { return e-xmin });
+                        xmax = Math.max(...x);
+                        x = x.map(function(e) { return e*1.5*MAXANGLE/xmax });
+                        ymin = Math.min(...y);
+                        y = y.map(function(e) { return e-ymin });
+                        ymax = Math.max(...y);
+                        y = y.map(function(e) { return -(e-ymax/2)*MAXANGLE/ymax });
+                        planetarium.octostars = [];
+                        x.forEach(function(e,i,a) {
+                            planetarium.octostars.push([677, -1, x[i], y[i]]);
+                        });
+                    });
                 }
             })
         };
@@ -109,31 +133,11 @@
             if($("#showOctocat").is(":checked")) {
                 planetarium.showstarsbackup = planetarium.showstars;
                 planetarium.starsbackup = planetarium.stars.slice(0);
-                $.get('octo_path.svg', function(s) {
-                    octosvg = s.children[0];
-                    p = octosvg.getElementsByTagName("path")[0];
-                    L = p.getTotalLength();
-                    x=[]; y=[];
-                    for(var l=0; l<L; l += (10 + Math.random()*20)) {
-                        pt = p.getPointAtLength(l)
-                        x.push(pt['x']);
-                        y.push(pt['y']);
-                    }
-                    MAXANGLE = 1.0;
-                    xmin = Math.min(...x);
-                    x = x.map(function(e) { return e-xmin });
-                    xmax = Math.max(...x);
-                    x = x.map(function(e) { return e*1.5*MAXANGLE/xmax });
-                    ymin = Math.min(...y);
-                    y = y.map(function(e) { return e-ymin });
-                    ymax = Math.max(...y);
-                    y = y.map(function(e) { return -(e-ymax/2)*MAXANGLE/ymax });
-                    x.forEach(function(e,i,a) { planetarium.stars.push([677, -1, x[i], y[i]]); })
-                    // planetarium.showstars = true;
-                    planetarium.draw();
-                });
+                planetarium.stars.push(...planetarium.octostars);
+                planetarium.showstars = true;
+                planetarium.draw();
             } else {
-                // planetarium.showstars = planetarium.showstarsbackup;
+                planetarium.showstars = planetarium.showstarsbackup;
                 planetarium.stars = planetarium.starsbackup;
                 planetarium.draw();
             }
