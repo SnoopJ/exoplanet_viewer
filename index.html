@@ -141,10 +141,14 @@
         </script>
     <style type="text/css">
         body {
+            color: white;
             background-color: #111111;
         }
         #controls {
             color: white;
+        }
+        #starmapper {
+            padding-top: 20px;
         }
         #exoinfo {
             position: absolute;
@@ -166,17 +170,20 @@
     </head>
 
     <body>
+        <h2><center>Colored points are exoplanets, mouse-over to view their name, click for detailed info</center></h2>
         <div id="controls">
-            <!-- Draw stars: <input type="checkbox" id="showStars"/> -->
-            Show constellations: <input type="checkbox" id="showConstellations"/>
-            Show solar system: <input type="checkbox" id="showSolarsystem"/>
-            Draw a sweet Octocat: <input type="checkbox" id="showOctocat"/><BR/>
-            Exoplanet filters:<BR/>
-            Transit: <input type="checkbox" class="exofilter" id="exo_transit"/>
-            Timing: <input type="checkbox" class="exofilter" id="exo_timing"/>
-            Radial velocity: <input type="checkbox" class="exofilter" id="exo_RV"/>
-            Microlensing: <input type="checkbox" class="exofilter" id="exo_microlensing"/>
-            Imaging: <input type="checkbox" class="exofilter" id="exo_imaging"/>
+            <center>
+                <!-- Draw stars: <input type="checkbox" id="showStars"/> -->
+                Show constellations: <input type="checkbox" id="showConstellations"/>
+                Show solar system: <input type="checkbox" id="showSolarsystem"/>
+                Draw a sweet Octocat: <input type="checkbox" id="showOctocat"/><BR/>
+                Exoplanet filters -
+                Transit: <input checked type="checkbox" class="exofilter" id="exo_transit"/>
+                Timing: <input checked type="checkbox" class="exofilter" id="exo_timing"/>
+                Radial velocity: <input checked type="checkbox" class="exofilter" id="exo_RV"/>
+                Microlensing: <input checked type="checkbox" class="exofilter" id="exo_microlensing"/>
+                Imaging: <input checked type="checkbox" class="exofilter" id="exo_imaging"/>
+            </center>
         </div>
         <div id="starmapper"></div>
         <div id="exoinfo">exo planet info goes here</div>

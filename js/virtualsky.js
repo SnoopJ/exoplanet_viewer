@@ -1259,7 +1259,7 @@ VirtualSky.prototype.createSky = function(){
 					matched = s.whichExo(x, y, s);
 					if (matched !== false) {
 						$("#exoinfo").text(matched);
-						$("#exoinfo").css({ top: y + 25, left: x + 20 });
+						$("#exoinfo").css({ top: y + 75, left: x + 20 });
 						$("#exoinfo").show();
 					} else {
 						$("#exoinfo").hide();
