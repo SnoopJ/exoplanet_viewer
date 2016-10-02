@@ -17,7 +17,7 @@
         }
         #starmapper {
             height: 100%;
-            width:100%;
+            width: 100%;
             position: relative;
         }
         #virtualskyinfobox{
@@ -55,20 +55,34 @@
                     exos = $.parseJSON(e.responseText).exos;
                     // Output values: name, apparentmagnitude, ra, dec, jupiter_mass, earth_mass, axis_au, disc_method, disc_year, distance, host_mass
                     planetarium = $.virtualsky({
-                        id:'starmapper',
                         atmosphere: false,
+                        constellations: true,
+                        constellationlabels: true,
+                        ecliptic: true,
+                        exos: exos,
+                        fullscreen:true,
                         live: true,
+                        id:'starmapper',
                         magnitude: 6,
                         projection: "mollweide",
-                        exos: exos,
-                        showstars: false,
+                        showstars: true,
                         showplanets: false,
-                        showplanetlabels: false,
-                        fullscreen:true
+                        showplanetlabels: false
                     });
                     $("#showStars").on('change', function(e) { planetarium.showstars = !planetarium.showstars; });
                     $(".exofilter").on('change', function(e) { updateExos(); });
                     planetarium.draw();
+                    // gnomic abuse
+                    planetarium.MINFOV = 1;
+                    planetarium.MAXFOV = 150;
+                    planetarium.setFOV = function(fov){
+                        if(fov > this.MAXFOV || typeof fov!=="number") this.fov = this.MAXFOV;
+                        else if(fov < this.MINFOV) this.fov = this.MINFOV;
+                        else this.fov = fov;
+                        this.maxangle = this.d2r*this.fov*Math.max(this.wide,this.tall)/this.tall;
+                        this.maxangle = Math.min(this.maxangle,Math.PI/2)
+                        return this;
+                    };
                 }
             })
         };
@@ -122,13 +136,18 @@
         #controls {
             color: white;
         }
+        #exoinfo {
+            position: absolute;
+            background-color: green;
+            width: 100px;
+        }
     </style>
     </head>
 
     <body>
         <div id="controls">
             Draw a sweet Octocat: <input type="checkbox" id="showOctocat"/><BR/>
-            Draw stars: <input type="checkbox" id="showStars"/><BR/>
+            <!-- Draw stars: <input type="checkbox" id="showStars"/><BR/> -->
             Transit: <input type="checkbox" class="exofilter" id="exo_transit"/><BR/>
             Timing: <input type="checkbox" class="exofilter" id="exo_timing"/><BR/>
             Radial velocity: <input type="checkbox" class="exofilter" id="exo_RV"/><BR/>
@@ -136,5 +155,6 @@
             Imaging: <input type="checkbox" class="exofilter" id="exo_imaging"/><BR/>
         </div>
         <div id="starmapper"></div>
+        <div id="exoinfo">exo planet info goes here</div>
     </body>
     </html>

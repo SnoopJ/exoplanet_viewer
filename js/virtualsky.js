@@ -1207,9 +1207,20 @@ VirtualSky.prototype.createSky = function(){
 		$("#"+this.idinner).on('click',{sky:this},function(e){
 			var x = e.pageX - $(this).offset().left - window.scrollX;
 			var y = e.pageY - $(this).offset().top - window.scrollY;
+			console.log(x,y)
 			matched = e.data.sky.whichPointer(x,y);
 			e.data.sky.toggleInfoBox(matched);
-			if(matched >= 0) $(e.data.sky.canvas).css({cursor:'pointer'});
+			if(matched >= 0) {
+				$(e.data.sky.canvas).css({cursor:'pointer'});
+			} else {
+				var x = e.pageX - $(this).offset().left;
+				var y = e.pageY - $(this).offset().top;
+				matched = e.data.sky.whichExo(x, y, e.data.sky);
+				if (matched !== false) {
+					var catprefix = "http://www.openexoplanetcatalogue.com/planet/";
+					window.open(catprefix + matched);
+				}
+			}
 		}).on('mousemove',{sky:this},function(e){
 			var s = e.data.sky;
 			// We don't need scrollX/scrollY as pageX/pageY seem to include this
@@ -1245,6 +1256,16 @@ VirtualSky.prototype.createSky = function(){
 			}else{
 				matched = s.whichPointer(x,y);
 				s.toggleInfoBox(matched);
+				if (matched === -1) {
+					matched = s.whichExo(x, y, s);
+					if (matched !== false) {
+						$("#exoinfo").text(matched);
+						$("#exoinfo").css({ top: y + 100, left: x });
+						$("#exoinfo").show();
+					} else {
+						$("#exoinfo").hide();
+					}
+				}
 			}
 		}).on('mousedown',{sky:this},function(e){
 			e.data.sky.dragging = true;
@@ -1421,6 +1442,18 @@ VirtualSky.prototype.whichPointer = function(x,y){
 			return i
 
 	return -1;
+}
+VirtualSky.prototype.whichExo = function(x,y,sky){
+	var that = sky;
+	var filtered = that.exos.filter(function(e) {
+		var p = that.radec2xy(e[2], e[3]);
+		return Math.abs(x-p.x) < 5 && Math.abs(y-p.y) < 5;
+	});
+	if (filtered.length > 0) {
+		return filtered[0][0];
+	}
+
+	return false;
 }
 VirtualSky.prototype.toggleInfoBox = function(i){
 	if(this.pointers.length == 0 || i >= this.pointers.length || (i>=0 && !this.pointers[i].html))
