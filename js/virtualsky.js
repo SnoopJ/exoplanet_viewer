@@ -1903,6 +1903,7 @@ VirtualSky.prototype.draw = function(proj){
 		.drawConstellationLines()
 		.drawConstellationBoundaries()
 		.drawStars()
+		.drawExos()
 		.drawEcliptic()
 		.drawMeridian()
 		.drawPlanets()
@@ -2145,15 +2146,37 @@ VirtualSky.prototype.drawStars = function(){
 	}
 	c.fill();
 
-// kludge for exoplanets
-	c.beginPath();
-	c.fillStyle = 'rgb(238, 210, 111)';
+	return this;
+}
+
+VirtualSky.prototype.drawExos = function(){
+	var exoplanetPalette = {
+		"imaging" : "rgb(111, 153, 245)",
+		"microlensing" : "rgb(165, 110, 208)",
+		"RV" : "rgb(195, 43, 43)",
+		"transit" : "rgb(207, 213, 98)",
+		"timing" : "rgb(251, 136, 0)"
+	}
+	if(!this.showexos) return this;
+	var mag,i,j,p,d,atmos,fovf;
+	var c = this.ctx;
+
+
+	this.az_off = (this.az_off+360)%360;
+	atmos = this.hasAtmos();
+	fovf = Math.sqrt(30/this.fov);
+	var f = 1;
+
+	if(this.negative) f *= 1.4;
+	if(typeof this.scalestars==="number" && this.scalestars!=1) f *= this.scalestars;
+	if(this.projection.id==="gnomic") f *= fovf;
+
 	if (this.exos) {
 		for(i = 0; i < this.exos.length; i++){
-			// if(this.exos[i][1] < this.magnitude){
-				// mag = this.exos[i][1];
-				// mag = this.exos[i][1];
-				mag = this.EXOMAG;
+			c.beginPath();
+			c.fillStyle = 'rgb(238, 210, 111)';
+			if(this.exos[i][1] < this.magnitude){
+				mag = this.exos[i][1] * (this.EXOMULT ? this.EXOMULT : 1);
 				p = this.radec2xy(this.exos[i][2], this.exos[i][3]);
 				if(this.isVisible(p.el) && !isNaN(p.x) && !this.isPointBad(p)){
 					d = 0.8*Math.max(3-mag/2.1, 0.5);
@@ -2162,12 +2185,19 @@ VirtualSky.prototype.drawStars = function(){
 					if(atmos) d *= Math.exp(-(90-p.el)*0.01);
 					d *= f;
 					c.moveTo(p.x+d,p.y);
-					if(this.showexos) c.arc(p.x,p.y,d,0,Math.PI*2,true);
+					// if(this.exos[i][7] === "RV") {
+					// 	c.fillStyle = "rgb(255, 0, 0)";
+					// }
+					c.fillStyle = exoplanetPalette[this.exos[i][7]] ? exoplanetPalette[this.exos[i][7]] : 'rgb(0,0,255)';
+					if(this.showexos) {
+						c.arc(p.x,p.y,d,0,Math.PI*2,true);
+						c.fill();
+					}
+
 					if(this.showstarlabels && this.starnames[this.exos[i][0]]) this.drawLabel(p.x,p.y,d,"",this.htmlDecode(this.starnames[this.exos[i][0]]));
 				}
-			// }
+			}
 		}
-		c.fill();
 	}
 
 	return this;
