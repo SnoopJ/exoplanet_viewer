@@ -1,7 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Virtual Sky</title>  	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />  	<!--  	  Virtual Sky <canvas> application  	  (c) 2010-2012 Stuart Lowe (Las Cumbras Observatory Global Telescope)  	-->  	<style>  	  html,body { height: 100%; }  	  body {  	    font-family: Helvetica, sans-serif;  	    color: black;  	    margin: 0px;  	    padding: 0px;  	    height: 100%;  	    width: 100%;  	    font-size: 1em;  	  }  	  #starmapper { height: 100%; width:100%; position: relative; }  	  #virtualskyinfobox{  	    font-size: 12px;  	    display:none;  	    background-color:rgba(200,200,200,1);  	    color:black;  	    padding:5px;  	    max-width:150px;  	    border-radius:0.5em;  	    -moz-border-radius: 0.5em;  	    -webkit-border-radius: 0.5em;  	    box-shadow:0px 0px 20px rgba(255,255,255,0.5);  	    -moz-box-shadow:0px 0px 20px rgba(255,255,255,0.5);  	    -webkit-box-shadow:0px 0px 20px rgba(255,255,255,0.5);  	  }  	  .virtualskyinfocredit{  	    font-size:0.5em;  	    float:left;  	    position:absolute;  	    padding:5px;  	    color: white;  	  }  	  #virtualskyinfobox img { width: 128px; height: 128px; }  	</style>  	<!-- IE seems to get very confused if it loads Javascript from within a Javascript when in an iframe. We'll have to load it here -->  	<!--[if IE]><script src="excanvas.min.js"></script><![endif]-->  	<script src="leapjs/leap-0.6.4.js"></script>
+    <title>Virtual Sky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+    <!-- Virtual Sky <canvas> application (c) 2010-2012 Stuart Lowe (Las Cumbras Observatory Global Telescope)  -->
+    <style>
+        html,body { height: 100%; }
+        body {
+            font-family: Helvetica, sans-serif;
+            color: black;
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            width: 100%;
+            font-size: 1em;
+        }
+        #starmapper {
+            height: 100%;
+            width:100%;
+            position: relative;
+        }
+        #virtualskyinfobox{
+            font-size: 12px;
+            display:none;
+            background-color:rgba(200,200,200,1);
+            color:black;
+            padding:5px;
+            max-width:150px;
+            border-radius:0.5em;
+            -moz-border-radius: 0.5em;
+            -webkit-border-radius: 0.5em;
+            box-shadow:0px 0px 20px rgba(255,255,255,0.5);
+            -moz-box-shadow:0px 0px 20px rgba(255,255,255,0.5);
+            -webkit-box-shadow:0px 0px 20px rgba(255,255,255,0.5);
+        }
+        .virtualskyinfocredit{
+            font-size:0.5em;
+            float:left;
+            position:absolute;
+            padding:5px;
+            color: white;}
+        #virtualskyinfobox img { width: 128px; height: 128px; }
+        </style>
+        <!-- IE seems to get very confused if it loads Javascript from within a Javascript when in an iframe. We'll have to load it here --><!--[if IE]><script src="excanvas.min.js"></script><![endif]-->
         <script src="js/jquery-1.10.0.min.js"></script>
         <script src="js/virtualsky.js" type="text/javascript"></script>
         <script>
@@ -31,6 +72,7 @@
         };
         function toggleOctocat() {
             if($("#showOctocat").is(":checked")) {
+                planetarium.showstarsbackup = planetarium.showstars;
                 planetarium.starsbackup = planetarium.stars.slice(0);
                 $.get('octo_path.svg', function(s) {
                     octosvg = s.children[0];
@@ -52,15 +94,25 @@
                     ymax = Math.max(...y);
                     y = y.map(function(e) { return -e*MAXANGLE/ymax });
                     x.forEach(function(e,i,a) { planetarium.stars.push([677, -1, x[i], y[i]]); })
+                    planetarium.showstars = true;
                     planetarium.draw();
                 });
             } else {
                 console.log("go back D:");
+                planetarium.showstars = planetarium.showstarsbackup;
                 planetarium.stars = planetarium.starsbackup;
                 planetarium.draw();
             }
         }
         </script>
+    <style type="text/css">
+        body {
+            background-color: #111111;
+        }
+        #controls {
+            color: white;
+        }
+    </style>
     </head>
 
     <body>
