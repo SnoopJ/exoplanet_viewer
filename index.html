@@ -56,8 +56,8 @@
                     // Output values: name, apparentmagnitude, ra, dec, jupiter_mass, earth_mass, axis_au, disc_method, disc_year, distance, host_mass
                     planetarium = $.virtualsky({
                         atmosphere: false,
-                        constellations: true,
-                        constellationlabels: true,
+                        constellations: false,
+                        constellationlabels: false,
                         ecliptic: true,
                         exos: exos,
                         fullscreen:true,
@@ -70,6 +70,16 @@
                         showplanetlabels: false
                     });
                     $("#showStars").on('change', function(e) { planetarium.showstars = !planetarium.showstars; });
+                    $("#showSolarsystem").on('change', function(e) {
+                        var toggle = $(this).is(":checked");
+                        planetarium.showplanets = toggle;
+                        planetarium.showplanetlabels = toggle;
+                    });
+                    $("#showConstellations").on('change', function(e) {
+                        var toggle = $(this).is(":checked");
+                        planetarium.constellation.lines = toggle;
+                        planetarium.constellation.labels = toggle;
+                    });
                     $(".exofilter").on('change', function(e) { updateExos(); });
                     planetarium.draw();
                     // gnomic abuse
@@ -142,7 +152,7 @@
             max-width: 200px;
             height: auto;
             display: none;
-
+            pointer-events:none;
             /*color: 'white';*/
             background:#76bcd2;
             border:3px solid #90e4ff;
@@ -157,13 +167,16 @@
 
     <body>
         <div id="controls">
+            <!-- Draw stars: <input type="checkbox" id="showStars"/> -->
+            Show constellations: <input type="checkbox" id="showConstellations"/>
+            Show solar system: <input type="checkbox" id="showSolarsystem"/>
             Draw a sweet Octocat: <input type="checkbox" id="showOctocat"/><BR/>
-            <!-- Draw stars: <input type="checkbox" id="showStars"/><BR/> -->
-            Transit: <input type="checkbox" class="exofilter" id="exo_transit"/><BR/>
-            Timing: <input type="checkbox" class="exofilter" id="exo_timing"/><BR/>
-            Radial velocity: <input type="checkbox" class="exofilter" id="exo_RV"/><BR/>
-            Microlensing: <input type="checkbox" class="exofilter" id="exo_microlensing"/><BR/>
-            Imaging: <input type="checkbox" class="exofilter" id="exo_imaging"/><BR/>
+            Exoplanet filters:<BR/>
+            Transit: <input type="checkbox" class="exofilter" id="exo_transit"/>
+            Timing: <input type="checkbox" class="exofilter" id="exo_timing"/>
+            Radial velocity: <input type="checkbox" class="exofilter" id="exo_RV"/>
+            Microlensing: <input type="checkbox" class="exofilter" id="exo_microlensing"/>
+            Imaging: <input type="checkbox" class="exofilter" id="exo_imaging"/>
         </div>
         <div id="starmapper"></div>
         <div id="exoinfo">exo planet info goes here</div>

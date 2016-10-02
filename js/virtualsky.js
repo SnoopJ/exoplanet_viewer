@@ -1207,12 +1207,11 @@ VirtualSky.prototype.createSky = function(){
 		$("#"+this.idinner).on('click',{sky:this},function(e){
 			var x = e.pageX - $(this).offset().left - window.scrollX;
 			var y = e.pageY - $(this).offset().top - window.scrollY;
-			console.log(x,y)
 			matched = e.data.sky.whichPointer(x,y);
 			e.data.sky.toggleInfoBox(matched);
 			if(matched >= 0) {
 				$(e.data.sky.canvas).css({cursor:'pointer'});
-			} else {
+			} else if (!e.data.sky.dragging) {
 				var x = e.pageX - $(this).offset().left;
 				var y = e.pageY - $(this).offset().top;
 				matched = e.data.sky.whichExo(x, y, e.data.sky);
@@ -1260,7 +1259,7 @@ VirtualSky.prototype.createSky = function(){
 					matched = s.whichExo(x, y, s);
 					if (matched !== false) {
 						$("#exoinfo").text(matched);
-						$("#exoinfo").css({ top: y + 90, left: x + 30 });
+						$("#exoinfo").css({ top: y + 25, left: x + 20 });
 						$("#exoinfo").show();
 					} else {
 						$("#exoinfo").hide();
